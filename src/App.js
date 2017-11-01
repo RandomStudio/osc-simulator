@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
+import { Jumbotron } from 'react-bootstrap';
 
-import { Jumbotron, Button } from 'react-bootstrap';
+const socket = io('http://localhost:5000');
+
+socket.on('connect', () => {
+  console.info('connected to backend');
+});
 
 class App extends Component {
   render() {
