@@ -12,7 +12,7 @@ const PORT = 12345;
 
 const oscServer = new osc.Server(PORT, '0.0.0.0');
 oscServer.on("message", function (msg, rinfo) {
-  logger.verbose("received OSC message:", msg);
+  logger.info("received OSC message:", msg);
 });
 
 logger.info('OSC server listening on port', PORT);
@@ -35,10 +35,10 @@ logger.info('WebSocket server listening on port', WS_PORT);
 io.on('connection', (socket) => {
   logger.info('connected to client websocket:', socket.id);
 
-  socket.on('dummy', (data) => {
+  socket.on('message', (data) => {
     logger.verbose('Websocket -> OSC', data);
     var client = new osc.Client('127.0.0.1', 12345);
-    client.send('dummy', data.arg, () => {
+    client.send(data.address, data.data, () => {
       logger.silly('OSC send OK');
       client.kill();
     });

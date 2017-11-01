@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Jumbotron } from 'react-bootstrap';
+import { Jumbotron, Button } from 'react-bootstrap';
 
 const socket = io('http://localhost:5000');
 
@@ -18,6 +18,10 @@ class App extends Component {
         <form>
 
           <div className="form-group">
+            <Button type="button" onClick={() => { this.sendOsc('dummmy', 'boo')}}>Dummy Test</Button>
+          </div>
+
+          <div className="form-group">
             <label>address</label>
             <input type="text" className="form-control" placeholder="test/" />
           </div>
@@ -27,9 +31,15 @@ class App extends Component {
             <input type="text" className="form-control" placeholder="boo" />
           </div>
 
+
         </form>
       </div>
     );
+  }
+
+  sendOsc(address, data) {
+    console.log('send OSC:', address, data);
+    socket.emit('message', { address, data });
   }
 }
 
