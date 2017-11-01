@@ -10,7 +10,17 @@ class App extends Component {
           <h1>OSC Simulator</h1>
         </Jumbotron>
         <form>
-          <input type="text" class="form-control" placeholder="Text input" />
+
+          <div className="form-group">
+            <label>address</label>
+            <input type="text" className="form-control" placeholder="test/" />
+          </div>
+
+          <div className="form-group">
+            <label>string message</label>
+            <input type="text" className="form-control" placeholder="boo" />
+          </div>
+
         </form>
       </div>
     );
