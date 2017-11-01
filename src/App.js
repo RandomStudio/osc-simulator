@@ -32,11 +32,11 @@ class App extends Component {
   }
 
   updateDestinationIp(event) {
-    this.setState({ destination: { ip: event.target.value } });
+    this.setState({ destination: { ...this.state.destination, ip: event.target.value } });
   }
 
   updateDestinationPort(event) {
-    this.setState({ destination: { port: event.target.value } });
+    this.setState({ destination: { ...this.state.destination, port: event.target.value } });
   }
 
   render() {
@@ -67,6 +67,7 @@ class App extends Component {
 
           <FormGroup>
             <Button type="button" onClick={() => { this.sendOsc('dummmy', 'frombrowser')}}>Dummy Test</Button>
+            <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser</tt></p>
           </FormGroup>
 
           <FormGroup>
@@ -82,7 +83,7 @@ class App extends Component {
 
         </form>
 
-        <h4>Received OSC</h4>
+        <h4>Received OSC @ 127.0.0.1:12345</h4>
         <em>{messagesReceived.length} messages</em>
         <ul>
           {messagesReceived}
