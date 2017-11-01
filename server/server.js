@@ -23,8 +23,8 @@ oscServer.on("message", function (msg, rinfo) {
 
 logger.info('OSC server listening on port', PORT);
 
-function sendOsc(address, data) {
-  var client = new osc.Client('127.0.0.1', 12345);
+function sendOsc(address, data, ip = '127.0.0.1', port = 12345) {
+  var client = new osc.Client(ip, port);
   client.send(address, data, () => {
     logger.silly('OSC send OK');
     client.kill();
@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
 
   socket.on('message', (data) => {
     logger.verbose('Websocket -> OSC', data);
-    sendOsc(data.address, data.data)
+    sendOsc(data.address, data.data, data.ip, data.port)
   });
 });
 

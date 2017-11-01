@@ -11,23 +11,39 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      received: []
+      received: [],
+      destination: {
+        ip: "127.0.0.1",
+        port: 12345
+      }
     }
 
     socket.on('connect', () => {
       console.info('connected to backend');
       socket.on('message', (data) => {
         console.log('received message:', data);
+        data.timestamp = Date.now();
         this.setState({ received: [...this.state.received, data] });
       });
     });
+
+    this.updateDestinationIp = this.updateDestinationIp.bind(this);
+    this.updateDestinationPort = this.updateDestinationPort.bind(this);
+  }
+
+  updateDestinationIp(event) {
+    this.setState({ destination: { ip: event.target.value } });
+  }
+
+  updateDestinationPort(event) {
+    this.setState({ destination: { port: event.target.value } });
   }
 
   render() {
 
     let messagesReceived = this.state.received.map( (msg) => {
       return (
-        <li>{JSON.stringify(msg)}</li>
+        <li key={msg.timestamp}>{JSON.stringify(msg)}</li>
       )
     } );
 
@@ -43,10 +59,10 @@ class App extends Component {
             <h6>Destination server</h6>
 
             <label>ip address</label>
-            <FormControl type="text" placeholder="127.0.0.1" />
+            <FormControl type="text" onChange={this.updateDestinationIp} value={this.state.destination.ip} />
 
             <label>port</label>
-            <FormControl type="text" placeholder="12345" />
+            <FormControl type="text" onChange={this.updateDestinationPort} value={this.state.destination.port} />
           </FormGroup>
 
           <FormGroup>
@@ -78,7 +94,10 @@ class App extends Component {
 
   sendOsc(address, data) {
     console.log('send OSC:', address, data);
-    socket.emit('message', { address, data });
+    let ip = this.state.destination.ip;
+    let port = this.state.destination.port;
+    console.log(ip, port);
+    socket.emit('message', { address, data, ip, port });
   }
 }
 
