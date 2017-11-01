@@ -10,9 +10,14 @@ logger.transports.console.level = 'verbose';
 const osc = require('node-osc');
 const PORT = 12345;
 
+let socketClient = null;
+
 const oscServer = new osc.Server(PORT, '0.0.0.0');
 oscServer.on("message", function (msg, rinfo) {
   logger.info("received OSC message:", msg);
+  if (socketClient) {
+    socketClient.emit('message', msg);
+  }
 });
 
 logger.info('OSC server listening on port', PORT);
@@ -34,6 +39,7 @@ logger.info('WebSocket server listening on port', WS_PORT);
 
 io.on('connection', (socket) => {
   logger.info('connected to client websocket:', socket.id);
+  socketClient = socket;
 
   socket.on('message', (data) => {
     logger.verbose('Websocket -> OSC', data);

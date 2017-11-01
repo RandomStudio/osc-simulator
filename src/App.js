@@ -4,17 +4,41 @@ import { Jumbotron, Button } from 'react-bootstrap';
 
 const socket = io('http://localhost:5000');
 
-socket.on('connect', () => {
-  console.info('connected to backend');
-});
+
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      received: []
+    }
+
+    socket.on('connect', () => {
+      console.info('connected to backend');
+      socket.on('message', (data) => {
+        console.log('received message:', data);
+        let receivedUpdate = this.state.received;
+        receivedUpdate.push(data);
+        this.setState({ received: receivedUpdate });
+      });
+    });    
+  }
+
   render() {
+
+    let messagesReceived = this.state.received.map( (msg) => {
+      return (
+        <li>{msg}</li>
+      )
+    } );
+
     return (
       <div className="container">
         <Jumbotron>
           <h1>OSC Simulator</h1>
         </Jumbotron>
+        <h4>Send OSC</h4>
         <form>
 
           <div className="form-group">
@@ -33,6 +57,13 @@ class App extends Component {
 
 
         </form>
+
+        <h4>Received OSC</h4>
+        <em>{messagesReceived.length} messages</em>
+        <ul>
+          {messagesReceived}
+        </ul>
+
       </div>
     );
   }
