@@ -3,6 +3,8 @@ How many times have I just needed to test my [OSC](http://opensoundcontrol.org/)
 
 Here is an easy utility to test receiving and sending of OSC messages from a browser interface.
 
+![Screen Recording](./screen-recording-1.gif)
+
 ## Installation
 You need to have [Node](https://nodejs.org) (tested with Node v8.9.0 LTS) installed on your system.
 
