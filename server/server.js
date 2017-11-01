@@ -13,6 +13,7 @@ const PORT = 12345;
 let socketClient = null;
 
 const oscServer = new osc.Server(PORT, '0.0.0.0');
+
 oscServer.on("message", function (msg, rinfo) {
   logger.info("received OSC message:", msg);
   if (socketClient) {
@@ -21,6 +22,14 @@ oscServer.on("message", function (msg, rinfo) {
 });
 
 logger.info('OSC server listening on port', PORT);
+
+function sendOsc(address, data) {
+  var client = new osc.Client('127.0.0.1', 12345);
+  client.send(address, data, () => {
+    logger.silly('OSC send OK');
+    client.kill();
+  });
+}
 
 // ----------------------------------------------------------------------------
 // WebSocket stuff
@@ -43,10 +52,30 @@ io.on('connection', (socket) => {
 
   socket.on('message', (data) => {
     logger.verbose('Websocket -> OSC', data);
-    var client = new osc.Client('127.0.0.1', 12345);
-    client.send(data.address, data.data, () => {
-      logger.silly('OSC send OK');
-      client.kill();
-    });
+    sendOsc(data.address, data.data)
   });
+});
+
+
+// ----------------------------------------------------------------------------
+// Interactive CLI stuff
+// ----------------------------------------------------------------------------
+
+const stdin = process.openStdin();
+
+stdin.addListener("data", (d) => {
+  let input = d.toString().trim();
+  logger.silly(`checking input [${input}]`);
+  switch(input) {
+
+    case 'dummy':
+      console.log(`send /dummy "fromcli"`);
+      sendOsc('dummy/', 'fromcli');
+
+    break;
+
+    default:
+      console.log('unknown command');
+
+  }
 });
