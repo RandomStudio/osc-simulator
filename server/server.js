@@ -23,7 +23,7 @@ let destination = {
   port: argv.destinationPort || 12345
 }
 let listen = {
-  ip: argv.listenIp || destination.ip,
+  ip: argv.listenIp || "0.0.0.0",
   port: argv.listenPort || destination.port
 }
 logger.info('will send to', destination);
