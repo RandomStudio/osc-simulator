@@ -15,20 +15,28 @@ class App extends Component {
       destination: {
         ip: "127.0.0.1",
         port: 12345
-      }
+      },
+      address: "test",
+      stringMessage: "blabla"
     }
 
     socket.on('connect', () => {
       console.info('connected to backend');
       socket.on('message', (data) => {
         console.log('received message:', data);
-        data.timestamp = Date.now();
-        this.setState({ received: [...this.state.received, data] });
+        let newMessage = {
+          address: data[0],
+          message: data,
+          timestamp: Date.now()
+        }
+        this.setState({ received: [...this.state.received, newMessage] });
       });
     });
 
     this.updateDestinationIp = this.updateDestinationIp.bind(this);
     this.updateDestinationPort = this.updateDestinationPort.bind(this);
+    this.updateAddress = this.updateAddress.bind(this);
+    this.updateStringMessage = this.updateStringMessage.bind(this);
   }
 
   updateDestinationIp(event) {
@@ -38,6 +46,15 @@ class App extends Component {
   updateDestinationPort(event) {
     this.setState({ destination: { ...this.state.destination, port: event.target.value } });
   }
+
+  updateAddress(event) {
+    this.setState({ address: event.target.value });
+  }
+
+  updateStringMessage(event) {
+    this.setState({ stringMessage: event.target.value });
+  }
+
 
   render() {
 
@@ -52,15 +69,17 @@ class App extends Component {
         <Jumbotron>
           <h1>OSC Simulator</h1>
         </Jumbotron>
-        <h4>Send OSC</h4>
+        <h2>Send OSC</h2>
+
+        <h6>Destination server</h6>
+
         <form>
-
           <FormGroup>
-            <h6>Destination server</h6>
-
             <label>ip address</label>
             <FormControl type="text" onChange={this.updateDestinationIp} value={this.state.destination.ip} />
+          </FormGroup>
 
+          <FormGroup>
             <label>port</label>
             <FormControl type="text" onChange={this.updateDestinationPort} value={this.state.destination.port} />
           </FormGroup>
@@ -70,20 +89,26 @@ class App extends Component {
             <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser</tt></p>
           </FormGroup>
 
+          <hr />
+
           <FormGroup>
             <label>address</label>
-            <FormControl type="text" placeholder="test/" />
+            <FormControl type="text" onChange={this.updateAddress} value={this.state.address} />
           </FormGroup>
 
           <FormGroup>
             <label>string message</label>
-            <FormControl type="text" placeholder="boo" />
+            <FormControl type="text" onChange={this.updateStringMessage} value={this.state.stringMessage} />
           </FormGroup>
 
+          <FormGroup>
+            <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.stringMessage)}}>Dummy Test</Button>
+            <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>{this.state.address}</tt> the message <tt>{this.state.stringMessage}</tt></p>
+          </FormGroup>
 
         </form>
 
-        <h4>Received OSC @ 127.0.0.1:12345</h4>
+        <h2>Received OSC @ 127.0.0.1:12345</h2>
         <em>{messagesReceived.length} messages</em>
         <ul>
           {messagesReceived}
