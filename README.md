@@ -71,3 +71,9 @@ Messages initiated from the browser:
 And the other way around. Incoming OSC messages:
 1. Received by the Node server, if it's listening on the correct port
 1. Node server relays messages via a Websocket message to the browser UI
+
+## Roadmap
+Some ideas for improvements:
+* Add more custom message-sending options (`int32`, `float32` and even `blob` types) - for both the browser and CLI
+* Serve pre-built frontend via Express rather than compiling every times
+* Dockerise for easy portability
