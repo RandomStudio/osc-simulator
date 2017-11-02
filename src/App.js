@@ -102,7 +102,7 @@ class App extends Component {
           </FormGroup>
 
           <FormGroup>
-            <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.stringMessage)}}>Dummy Test</Button>
+            <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.stringMessage)}}>Send</Button>
             <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>{this.state.address}</tt> the message <tt>{this.state.stringMessage}</tt></p>
           </FormGroup>
 
