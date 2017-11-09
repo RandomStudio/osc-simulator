@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Jumbotron, FormGroup, FormControl, Button } from 'react-bootstrap';
+import { Col, Jumbotron, FormGroup, FormControl, Button } from 'react-bootstrap';
 
 const socket = io('http://localhost:5000');
 
@@ -17,7 +17,8 @@ class App extends Component {
         port: 12345
       },
       address: "test",
-      stringMessage: "blabla"
+      stringValue: "",
+      intValue: 0
     }
 
     socket.on('connect', () => {
@@ -36,7 +37,8 @@ class App extends Component {
     this.updateDestinationIp = this.updateDestinationIp.bind(this);
     this.updateDestinationPort = this.updateDestinationPort.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
-    this.updateStringMessage = this.updateStringMessage.bind(this);
+    this.updateString = this.updateString.bind(this);
+    this.updateInt = this.updateInt.bind(this);
   }
 
   updateDestinationIp(event) {
@@ -51,9 +53,14 @@ class App extends Component {
     this.setState({ address: event.target.value });
   }
 
-  updateStringMessage(event) {
-    this.setState({ stringMessage: event.target.value });
+  updateString(event) {
+    this.setState({ stringValue: event.target.value });
   }
+
+  updateInt(event) {
+    this.setState({ intValue: parseInt(event.target.value) });
+  }
+
 
 
   render() {
@@ -63,6 +70,7 @@ class App extends Component {
         <li key={msg.timestamp}>{JSON.stringify(msg)}</li>
       )
     } );
+
 
     return (
       <div className="container">
@@ -96,15 +104,27 @@ class App extends Component {
             <FormControl type="text" onChange={this.updateAddress} value={this.state.address} />
           </FormGroup>
 
-          <FormGroup>
-            <label>string message</label>
-            <FormControl type="text" onChange={this.updateStringMessage} value={this.state.stringMessage} />
-          </FormGroup>
+          <Col md={6}>
+            <FormGroup>
+              <label>string arg</label>
+              <FormControl type="text" onChange={this.updateString} value={this.state.stringValue} />
+            </FormGroup>
+            <FormGroup>
+              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.stringValue)}}>Send string</Button>
+            </FormGroup>
+          </Col>
 
-          <FormGroup>
-            <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.stringMessage)}}>Send</Button>
-            <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>{this.state.address}</tt> the message <tt>{this.state.stringMessage}</tt></p>
-          </FormGroup>
+          <Col md={6}>
+            <FormGroup>
+              <label>int32 arg</label>
+              <FormControl type="number" onChange={this.updateInt} value={this.state.intValue} />
+            </FormGroup>
+            <FormGroup>
+              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValue, 'int')}}>Send int</Button>
+            </FormGroup>
+          </Col>
+
+
 
         </form>
 
@@ -118,8 +138,16 @@ class App extends Component {
     );
   }
 
-  sendOsc(address, data) {
-    console.log('send OSC:', address, data);
+  sendOsc(address, data, type) {
+    // const parsedValue = (data) => {
+    //     if (type === 'int') {
+    //       return parseInt(data);
+    //     }
+    //     if (type === 'string') {
+    //       return data;
+    //     }
+    // }
+    console.log('send OSC:', address, data, 'as', typeof(data));
     let ip = this.state.destination.ip;
     let port = this.state.destination.port;
     console.log(ip, port);
