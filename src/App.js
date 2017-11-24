@@ -77,7 +77,7 @@ class App extends Component {
     const value = target.value;
     const index = parseInt(target.name);
     const updatedInts = this.state.intValues.map( (entry, i) =>
-      i == index ? value : entry
+      i == index ? parseInt(value) : entry
     );
     this.setState({ intValues: updatedInts })
   }
@@ -147,7 +147,7 @@ class App extends Component {
               <FormControl name="1" type="number" onChange={this.updateInts} value={this.state.intValues[1]} />
             </FormGroup>
             <FormGroup>
-              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValues, 'ints')}}>Send ints</Button>
+              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValues, 'int')}}>Send ints</Button>
             </FormGroup>
 
           </Col>
