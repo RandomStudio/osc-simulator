@@ -18,7 +18,7 @@ class App extends Component {
       },
       address: "test",
       stringValue: "",
-      intValue: 0,
+      intValues: [0, 0],
       blob: {
         id: 0,
         x: 0.5,
@@ -43,7 +43,7 @@ class App extends Component {
     this.updateDestinationPort = this.updateDestinationPort.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
     this.updateString = this.updateString.bind(this);
-    this.updateInt = this.updateInt.bind(this);
+    this.updateInts = this.updateInts.bind(this);
     this.updateBlob = this.updateBlob.bind(this);
   }
 
@@ -63,10 +63,6 @@ class App extends Component {
     this.setState({ stringValue: event.target.value });
   }
 
-  updateInt(event) {
-    this.setState({ intValue: parseInt(event.target.value, 10) });
-  }
-
   updateBlob(event) {
     this.setState({
       blob: {
@@ -74,6 +70,16 @@ class App extends Component {
         [event.target.name]: event.target.value
       }
     })
+  }
+
+  updateInts(event) {
+    const target = event.target;
+    const value = target.value;
+    const index = parseInt(target.name);
+    const updatedInts = this.state.intValues.map( (entry, i) =>
+      i == index ? value : entry
+    );
+    this.setState({ intValues: updatedInts })
   }
 
 
@@ -130,13 +136,20 @@ class App extends Component {
           </Col>
 
           <Col md={4}>
+
             <FormGroup>
-              <label>int32 arg</label>
-              <FormControl type="number" onChange={this.updateInt} value={this.state.intValue} />
+              <label>int32 arg 0</label>
+              <FormControl name="0" type="number" onChange={this.updateInts} value={this.state.intValues[0]} />
+            </FormGroup>
+
+            <FormGroup>
+              <label>int32 arg 1</label>
+              <FormControl name="1" type="number" onChange={this.updateInts} value={this.state.intValues[1]} />
             </FormGroup>
             <FormGroup>
-              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValue, 'int')}}>Send int</Button>
+              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValues, 'ints')}}>Send ints</Button>
             </FormGroup>
+
           </Col>
 
           <Col md={4}>
