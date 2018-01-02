@@ -101,7 +101,7 @@ class App extends Component {
           </FormGroup>
 
           <FormGroup>
-            <Button type="button" onClick={() => { this.sendOsc('dummy', ['frombrowser', 0, 0.1])} }>Dummy Test</Button>
+            <Button type="button" onClick={() => { this.sendOsc('dummy', ['frombrowser', 0, 0.1])} } bsStyle="success">Dummy Test</Button>
             <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser, 0, 0.1</tt></p>
           </FormGroup>
 
@@ -119,7 +119,8 @@ class App extends Component {
           </FormGroup>
           <FormGroup>
             <Button onClick={() => { this.setState( { params: [...this.state.params, "new"] } )}}>Add Param</Button>
-            <Button onClick={() => { this.sendOsc( this.state.address, this.state.params )}}>Send</Button>
+            <Button onClick={() => { this.setState( { params: ["one"] } )}}>Reset</Button>
+            <Button onClick={() => { this.sendOsc( this.state.address, this.state.params )}} bsStyle="success">Send</Button>
           </FormGroup>
 
         </form>
