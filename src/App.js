@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Col, Jumbotron, FormGroup, FormControl, Button } from 'react-bootstrap';
+import { Col, Jumbotron, FormGroup, FormControl, Button, InputGroup, ControlLabel } from 'react-bootstrap';
 
 const socket = io('http://localhost:5000');
-
-
 
 class App extends Component {
 
@@ -45,9 +43,6 @@ class App extends Component {
     this.updateDestinationIp = this.updateDestinationIp.bind(this);
     this.updateDestinationPort = this.updateDestinationPort.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
-    this.updateString = this.updateString.bind(this);
-    this.updateInts = this.updateInts.bind(this);
-    this.updateBlob = this.updateBlob.bind(this);
   }
 
   updateDestinationIp(event) {
@@ -62,39 +57,27 @@ class App extends Component {
     this.setState({ address: event.target.value });
   }
 
-  updateString(event) {
-    this.setState({ stringValue: event.target.value });
-  }
-
-  updateBlob(event) {
-    this.setState({
-      blob: {
-        ...this.state.blob,
-        [event.target.name]: event.target.value
-      }
-    })
-  }
-
-  updateInts(event) {
-    const target = event.target;
-    const value = target.value;
-    const index = parseInt(target.name);
-    const updatedInts = this.state.intValues.map( (entry, i) =>
-      i == index ? parseInt(value) : entry
-    );
-    this.setState({ intValues: updatedInts })
-  }
 
 
 
   render() {
 
-    let messagesReceived = this.state.received.map( (msg) => {
-      return (
-        <li key={msg.timestamp}>{JSON.stringify(msg)}</li>
-      )
-    } );
+    const messagesReceived = this.state.received.map( msg =>
+      <li key={msg.timestamp}>{JSON.stringify(msg)}</li>
+    );
 
+    // OSC type specs as per http://opensoundcontrol.org/spec-1_0
+
+    const customParams = this.state.params.map( (param, index) =>
+        <FormGroup>
+          <ControlLabel>Param #{index+1}</ControlLabel>
+          <FormControl componentClass="select">
+            <option value="string">OSC-string</option>
+            <option value="int">int32</option>
+          </FormControl>
+          <FormControl type="text" />
+        </FormGroup>
+    );
 
     return (
       <div className="container">
@@ -117,7 +100,7 @@ class App extends Component {
           </FormGroup>
 
           <FormGroup>
-            <Button type="button" onClick={() => { this.sendOsc('dummmy', 'frombrowser')}}>Dummy Test</Button>
+            <Button type="button" onClick={() => { this.sendOsc('dummmy', [{ type: 'string', value: 'frombrowser' }])} }>Dummy Test</Button>
             <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser</tt></p>
           </FormGroup>
 
@@ -128,46 +111,15 @@ class App extends Component {
             <FormControl type="text" onChange={this.updateAddress} value={this.state.address} />
           </FormGroup>
 
-          <Col md={4}>
+          <Col md={12}>
+            <h2>Custom params</h2>
             <FormGroup>
-              <label>string arg</label>
-              <FormControl type="text" onChange={this.updateString} value={this.state.stringValue} />
+              {customParams}
             </FormGroup>
             <FormGroup>
-              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.stringValue)}}>Send string</Button>
-            </FormGroup>
-          </Col>
-
-          <Col md={4}>
-
-            <FormGroup>
-              <label>int32 arg 0</label>
-              <FormControl name="0" type="number" onChange={this.updateInts} value={this.state.intValues[0]} />
-            </FormGroup>
-
-            <FormGroup>
-              <label>int32 arg 1</label>
-              <FormControl name="1" type="number" onChange={this.updateInts} value={this.state.intValues[1]} />
-            </FormGroup>
-            <FormGroup>
-              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValues, 'int')}}>Send ints</Button>
-            </FormGroup>
-
-          </Col>
-
-          <Col md={4}>
-            <FormGroup>
-              <label>Simple Blob</label>
-              <FormControl type="number" onChange={this.updateBlob} name="id" value={this.state.blob.id} />
-              <FormControl type="number" onChange={this.updateBlob} name="x" value={this.state.blob.x} />
-              <FormControl type="number" onChange={this.updateBlob} name="y" value={this.state.blob.y} />
-            </FormGroup>
-            <FormGroup>
-              <tt>{JSON.stringify(this.state.blob, null, 4)}</tt>
-              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.blobToArray(this.state.blob))}}>Send simple blob</Button>
+              <Button type="button" onClick={() => { this.sendOsc()}}>Send</Button>
             </FormGroup>
           </Col>
-
 
         </form>
 
@@ -181,24 +133,16 @@ class App extends Component {
     );
   }
 
-  blobToArray(blob) {
-    return [
-      parseInt(blob.id),
-      parseFloat(blob.x),
-      parseFloat(blob.y)
-    ]
-  }
+  // blobToArray(blob) {
+  //   return [
+  //     parseInt(blob.id),
+  //     parseFloat(blob.x),
+  //     parseFloat(blob.y)
+  //   ]
+  // }
 
-  sendOsc(address, data, type) {
-    // const parsedValue = (data) => {
-    //     if (type === 'int') {
-    //       return parseInt(data);
-    //     }
-    //     if (type === 'string') {
-    //       return data;
-    //     }
-    // }
-    console.log('send OSC:', address, data, 'as', typeof(data));
+  sendOsc(address, data) {
+    console.log('send OSC:', address, data);
     let ip = this.state.destination.ip;
     let port = this.state.destination.port;
     console.log(ip, port);

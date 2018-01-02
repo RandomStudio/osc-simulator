@@ -43,8 +43,8 @@ oscServer.on("message", function (msg, rinfo) {
 function sendOsc(address, data, ip = '127.0.0.1', port = 12345) {
   logger.info('sendOsc with', address, data, ip, port);
   logger.verbose('data type:', typeof(data));
-  var client = new osc.Client(ip, port);
-  // var client = new osc.Client('192.168.1.172', port);
+  let client = new osc.Client(ip, port);
+
   client.send(address, data, (err) => {
     if (err) {
       logger.error('OSC error:', err);
@@ -76,7 +76,7 @@ if (!STANDALONE) {
     socketClient = socket;
 
     socket.on('message', (data) => {
-      logger.verbose('Websocket -> OSC', data);
+      logger.verbose('Websocket -> OSC', data, typeof data);
       sendOsc(data.address, data.data, data.ip, data.port)
     });
   });
