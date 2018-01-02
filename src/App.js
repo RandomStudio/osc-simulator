@@ -57,7 +57,6 @@ class App extends Component {
 
   updateParams(event) {
     const target = event.target;
-    console.log('updateParams for:', target.name, target.value);
     const index = target.name.split('param-')[1];
     let params = this.state.params;
     params[index] = target.value;
