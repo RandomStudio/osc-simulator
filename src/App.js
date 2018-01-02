@@ -56,7 +56,12 @@ class App extends Component {
   }
 
   updateParams(event) {
-
+    const target = event.target;
+    console.log('updateParams for:', target.name, target.value);
+    const index = target.name.split('param-')[1];
+    let params = this.state.params;
+    params[index] = target.value;
+    this.setState({ params: params });
   }
 
 
@@ -71,7 +76,7 @@ class App extends Component {
     const customParams = this.state.params.map( (param, index) =>
         <FormGroup key={"param-" + index}>
           <ControlLabel>Param #{index+1}</ControlLabel>
-          <FormControl type="text" value={param} onChange={this.updateParams} />
+          <FormControl type="text" value={param} onChange={this.updateParams} name={"param-"+index} />
         </FormGroup>
     );
 
@@ -102,21 +107,20 @@ class App extends Component {
 
           <hr />
 
+          <h2>Custom</h2>
+
           <FormGroup>
             <label>address</label>
             <FormControl type="text" onChange={this.updateAddress} value={this.state.address} />
           </FormGroup>
 
-          <Col md={12}>
-            <h2>Custom params</h2>
-            <FormGroup>
-              {customParams}
-            </FormGroup>
-            <FormGroup>
-              <Button onClick={() => { this.setState( { params: [...this.state.params, "new"] } )}}>Add Param</Button>
-              <Button onClick={() => { this.sendOsc( this.state.address, this.state.params )}}>Send</Button>
-            </FormGroup>
-          </Col>
+          <FormGroup>
+            {customParams}
+          </FormGroup>
+          <FormGroup>
+            <Button onClick={() => { this.setState( { params: [...this.state.params, "new"] } )}}>Add Param</Button>
+            <Button onClick={() => { this.sendOsc( this.state.address, this.state.params )}}>Send</Button>
+          </FormGroup>
 
         </form>
 
@@ -125,8 +129,6 @@ class App extends Component {
         <ul>
           {messagesReceived}
         </ul>
-
-        <code>{JSON.stringify(this.state, null, 4)}</code>
 
       </div>
 
