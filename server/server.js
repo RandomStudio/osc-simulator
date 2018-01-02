@@ -41,7 +41,7 @@ oscServer.on("message", function (msg, rinfo) {
 });
 
 function sendOsc(address, data, ip = '127.0.0.1', port = 12345) {
-  logger.info('sendOsc with', address, data, ip, port);
+  logger.info(`sendOsc ${ip}:${port} to address ${address}: ${JSON.stringify(data)}`);
   logger.verbose('data type:', typeof(data));
   let client = new osc.Client(ip, port);
 

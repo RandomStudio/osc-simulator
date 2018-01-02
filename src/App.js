@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Col, Jumbotron, FormGroup, FormControl, Button, InputGroup, ControlLabel } from 'react-bootstrap';
+import { Col, Jumbotron, FormGroup, FormControl, Button, ControlLabel } from 'react-bootstrap';
 
 const socket = io('http://localhost:5000');
 
@@ -16,17 +16,18 @@ class App extends Component {
       },
       address: "/test",
       params: [
-        {
-          type: "string",
-          value: "one"
-        },
-        {
-          type: "string",
-          value: "two"
-        }
+        "one"
       ]
     }
 
+    this.updateDestinationIp = this.updateDestinationIp.bind(this);
+    this.updateDestinationPort = this.updateDestinationPort.bind(this);
+    this.updateAddress = this.updateAddress.bind(this);
+    this.updateParams = this.updateParams.bind(this);
+
+  }
+
+  componentDidMount() {
     socket.on('connect', () => {
       console.info('connected to backend');
       socket.on('message', (data) => {
@@ -40,9 +41,6 @@ class App extends Component {
       });
     });
 
-    this.updateDestinationIp = this.updateDestinationIp.bind(this);
-    this.updateDestinationPort = this.updateDestinationPort.bind(this);
-    this.updateAddress = this.updateAddress.bind(this);
   }
 
   updateDestinationIp(event) {
@@ -57,6 +55,10 @@ class App extends Component {
     this.setState({ address: event.target.value });
   }
 
+  updateParams(event) {
+
+  }
+
 
 
 
@@ -66,16 +68,10 @@ class App extends Component {
       <li key={msg.timestamp}>{JSON.stringify(msg)}</li>
     );
 
-    // OSC type specs as per http://opensoundcontrol.org/spec-1_0
-
     const customParams = this.state.params.map( (param, index) =>
-        <FormGroup>
+        <FormGroup key={"param-" + index}>
           <ControlLabel>Param #{index+1}</ControlLabel>
-          <FormControl componentClass="select">
-            <option value="string">OSC-string</option>
-            <option value="int">int32</option>
-          </FormControl>
-          <FormControl type="text" />
+          <FormControl type="text" value={param} onChange={this.updateParams} />
         </FormGroup>
     );
 
@@ -100,8 +96,8 @@ class App extends Component {
           </FormGroup>
 
           <FormGroup>
-            <Button type="button" onClick={() => { this.sendOsc('dummmy', [{ type: 'string', value: 'frombrowser' }])} }>Dummy Test</Button>
-            <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser</tt></p>
+            <Button type="button" onClick={() => { this.sendOsc('dummy', ['frombrowser', 0, 0.1])} }>Dummy Test</Button>
+            <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser, 0, 0.1</tt></p>
           </FormGroup>
 
           <hr />
@@ -117,7 +113,8 @@ class App extends Component {
               {customParams}
             </FormGroup>
             <FormGroup>
-              <Button type="button" onClick={() => { this.sendOsc()}}>Send</Button>
+              <Button onClick={() => { this.setState( { params: [...this.state.params, "new"] } )}}>Add Param</Button>
+              <Button onClick={() => { this.sendOsc( this.state.address, this.state.params )}}>Send</Button>
             </FormGroup>
           </Col>
 
@@ -129,7 +126,10 @@ class App extends Component {
           {messagesReceived}
         </ul>
 
+        <code>{JSON.stringify(this.state, null, 4)}</code>
+
       </div>
+
     );
   }
 
