@@ -74,6 +74,6 @@ And the other way around. Incoming OSC messages:
 
 ## Roadmap
 Some ideas for improvements:
-* Add more custom message-sending options (`int32`, `float32` and even `blob` types) - for both the browser and CLI
-* Serve pre-built frontend via Express rather than compiling every times
+* Add more custom message-sending options (<del>`int32`</del>, `float32` and even `blob` types) - for both the browser and CLI
+* Serve pre-built frontend via Express rather than compiling every time
 * Dockerise for easy portability
