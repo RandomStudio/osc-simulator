@@ -17,13 +17,16 @@ class App extends Component {
         port: 12345
       },
       address: "/test",
-      stringValue: "",
-      intValues: [0, 0],
-      blob: {
-        id: 0,
-        x: 0.5,
-        y: 0.5
-      }
+      params: [
+        {
+          type: "string",
+          value: "one"
+        },
+        {
+          type: "string",
+          value: "two"
+        }
+      ]
     }
 
     socket.on('connect', () => {

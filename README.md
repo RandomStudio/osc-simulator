@@ -75,5 +75,6 @@ And the other way around. Incoming OSC messages:
 ## Roadmap
 Some ideas for improvements:
 * Allow arbitrary adding, removing and re-ordering of arguments (of configurable types) through a simple interface
+* Allow saving/loading of preset messages (with their argument types and ordering)
 * Serve pre-built frontend via Express rather than compiling every time
 * Dockerise for easy portability
