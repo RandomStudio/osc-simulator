@@ -143,12 +143,16 @@ class App extends Component {
   //   ]
   // }
 
+  autoType(array) {
+    return array.map( value => isNaN(parseFloat(value)) ? value : parseFloat(value) );
+  }
+
   sendOsc(address, data) {
     console.log('send OSC:', address, data);
     let ip = this.state.destination.ip;
     let port = this.state.destination.port;
-    console.log(ip, port);
-    socket.emit('message', { address, data, ip, port });
+    console.log(ip, port, this.autoType(data));
+    socket.emit('message', { address, data: this.autoType(data), ip, port });
   }
 }
 
