@@ -1,6 +1,6 @@
 {
   "name": "osc-simulator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.7",
