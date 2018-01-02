@@ -16,9 +16,14 @@ class App extends Component {
         ip: "127.0.0.1",
         port: 12345
       },
-      address: "test",
+      address: "/test",
       stringValue: "",
-      intValue: 0
+      intValues: [0, 0],
+      blob: {
+        id: 0,
+        x: 0.5,
+        y: 0.5
+      }
     }
 
     socket.on('connect', () => {
@@ -38,7 +43,8 @@ class App extends Component {
     this.updateDestinationPort = this.updateDestinationPort.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
     this.updateString = this.updateString.bind(this);
-    this.updateInt = this.updateInt.bind(this);
+    this.updateInts = this.updateInts.bind(this);
+    this.updateBlob = this.updateBlob.bind(this);
   }
 
   updateDestinationIp(event) {
@@ -57,8 +63,23 @@ class App extends Component {
     this.setState({ stringValue: event.target.value });
   }
 
-  updateInt(event) {
-    this.setState({ intValue: parseInt(event.target.value) });
+  updateBlob(event) {
+    this.setState({
+      blob: {
+        ...this.state.blob,
+        [event.target.name]: event.target.value
+      }
+    })
+  }
+
+  updateInts(event) {
+    const target = event.target;
+    const value = target.value;
+    const index = parseInt(target.name);
+    const updatedInts = this.state.intValues.map( (entry, i) =>
+      i == index ? parseInt(value) : entry
+    );
+    this.setState({ intValues: updatedInts })
   }
 
 
@@ -104,7 +125,7 @@ class App extends Component {
             <FormControl type="text" onChange={this.updateAddress} value={this.state.address} />
           </FormGroup>
 
-          <Col md={6}>
+          <Col md={4}>
             <FormGroup>
               <label>string arg</label>
               <FormControl type="text" onChange={this.updateString} value={this.state.stringValue} />
@@ -114,16 +135,35 @@ class App extends Component {
             </FormGroup>
           </Col>
 
-          <Col md={6}>
+          <Col md={4}>
+
             <FormGroup>
-              <label>int32 arg</label>
-              <FormControl type="number" onChange={this.updateInt} value={this.state.intValue} />
+              <label>int32 arg 0</label>
+              <FormControl name="0" type="number" onChange={this.updateInts} value={this.state.intValues[0]} />
+            </FormGroup>
+
+            <FormGroup>
+              <label>int32 arg 1</label>
+              <FormControl name="1" type="number" onChange={this.updateInts} value={this.state.intValues[1]} />
             </FormGroup>
             <FormGroup>
-              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValue, 'int')}}>Send int</Button>
+              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.state.intValues, 'int')}}>Send ints</Button>
             </FormGroup>
+
           </Col>
 
+          <Col md={4}>
+            <FormGroup>
+              <label>Simple Blob</label>
+              <FormControl type="number" onChange={this.updateBlob} name="id" value={this.state.blob.id} />
+              <FormControl type="number" onChange={this.updateBlob} name="x" value={this.state.blob.x} />
+              <FormControl type="number" onChange={this.updateBlob} name="y" value={this.state.blob.y} />
+            </FormGroup>
+            <FormGroup>
+              <tt>{JSON.stringify(this.state.blob, null, 4)}</tt>
+              <Button type="button" onClick={() => { this.sendOsc(this.state.address, this.blobToArray(this.state.blob))}}>Send simple blob</Button>
+            </FormGroup>
+          </Col>
 
 
         </form>
@@ -136,6 +176,14 @@ class App extends Component {
 
       </div>
     );
+  }
+
+  blobToArray(blob) {
+    return [
+      parseInt(blob.id),
+      parseFloat(blob.x),
+      parseFloat(blob.y)
+    ]
   }
 
   sendOsc(address, data, type) {
