@@ -16,7 +16,7 @@ class App extends Component {
         ip: "127.0.0.1",
         port: 12345
       },
-      address: "test",
+      address: "/test",
       stringValue: "",
       intValues: [0, 0],
       blob: {
