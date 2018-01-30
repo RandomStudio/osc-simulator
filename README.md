@@ -55,11 +55,15 @@ Or create your own `.osc-simulatorrc` file in the root of the project and use JS
     }
   }
 ```
+Using a file is nice because you get to persist your settings. Command line arguments will always take precedence, though.
 
 ### Logging
 Logging on the server side is provided by the venerable [Winston](https://www.npmjs.com/package/winston).
 
-You can optionally log to file (in addition to the console) by setting `--logging.toFile=true` on the command line or overriding elsewhere (as described above).
+#### Logging to file
+To debug fast-moving streams of OSC data, it can be helpful to write everything to disk so you can search, etc. 
+
+OSC Simulator allows you to optionally log to file (in addition to the console) by setting `--logging.toFile=true` on the command line or overriding elsewhere (as described above).
 
 ## CLI and Standalone Mode
 ### Basic CLI usage
