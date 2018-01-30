@@ -36,12 +36,12 @@ For now, you have two options:
 
 In either case, you can send to the default (the OSC Simulator server itself!) @ `127.0.0.1:12345` or enter the destination IP address and port for your OSC client application.
 
-### Configuration is easy
+## Configuration
 This project uses the excellent configuration manager for Node, [rc](https://www.npmjs.com/package/rc). That means you have a number of options for overriding the default settings.
 
 For example, you can override from the command line:
 ```
-npm run dev --sending.ip=192.168.1.170
+node server/server.js --sending.ip=192.168.1.170
 ```
 Or create your own `.osc-simulatorrc` file in the root of the project and use JSON to override the properties you want (these get *merged* into the defaults, so just specify the things you want to change):
 ```
@@ -57,13 +57,15 @@ Or create your own `.osc-simulatorrc` file in the root of the project and use JS
 ```
 Using a file is nice because you get to persist your settings. Command line arguments will always take precedence, though.
 
-### Logging
+## Logging
 Logging on the server side is provided by the venerable [Winston](https://www.npmjs.com/package/winston).
 
-#### Logging to file
+#### Logging high frequency messages
 To debug fast-moving streams of OSC data, it can be helpful to write everything to disk so you can search, etc. 
 
 OSC Simulator allows you to optionally log to file (in addition to the console) by setting `--logging.toFile=true` on the command line or overriding elsewhere (as described above).
+
+You can also disable the "received" message list on the front end (useful if you're expected a lot of high-frequency incoming messages) by setting `--logging.frontEndMessages=false`
 
 ## CLI and Standalone Mode
 ### Basic CLI usage

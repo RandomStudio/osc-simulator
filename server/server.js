@@ -17,7 +17,8 @@ const config = require('rc')('osc-simulator', {
   logging: { 
     level: 'verbose',
     colorize: true,
-    toFile: false
+    toFile: false,
+    frontEndMessages: true
   }
 });
 
@@ -103,7 +104,11 @@ if (!config.standalone) {
     logger.info('connected to client websocket:', socket.id);
     socketClient = socket;
 
-    socket.emit('configuration', { sending: config.sending, receiving: config.receiving });
+    socket.emit('configuration', { 
+      sending: config.sending, 
+      receiving: config.receiving, 
+      frontEndMessages: config.logging.frontEndMessages 
+    });
 
     socket.on('message', (data) => {
       logger.verbose('Websocket -> OSC', data, typeof data);

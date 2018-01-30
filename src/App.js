@@ -28,7 +28,11 @@ class App extends Component {
       socket.on('configuration', config => {
         console.log('configuration received:', config);
         if (config.sending && config.receiving) {
-          this.setState({ sending: config.sending, receiving: config.receiving });
+          this.setState({ 
+            sending: config.sending, 
+            receiving: config.receiving,
+            frontEndMessages: config.frontEndMessages
+          });
         }
       });
 
@@ -82,12 +86,11 @@ class App extends Component {
             <code>WARNING: Not connected to backend relay properly</code>
           }
         </Jumbotron>
-        <h2>Basic connection test</h2>
 
         
         {this.state && this.state.sending &&
         <form>
-          <h6>Destination: {this.state.sending.ip}:{this.state.sending.port}</h6>
+          <h2>Sending OSC to {this.state.sending.ip}:{this.state.sending.port}</h2>
           
           <FormGroup>
           <Button type="button" onClick={() => { this.sendOsc('dummy', ['frombrowser', 0, 0.1])} } bsStyle="success">Dummy Test</Button>
@@ -118,11 +121,18 @@ class App extends Component {
 
         </form>
 
-        <h2>Received OSC @ 127.0.0.1:12345</h2>
-        <em>{messagesReceived.length} messages</em>
-        <ul>
-          {messagesReceived}
-        </ul>
+        {this.state && this.state.receiving &&
+        <div>
+          <h2>Receiving OSC @ {this.state.receiving.ip}:{this.state.receiving.port}</h2>
+          <em>{messagesReceived.length} messages</em>
+          {this.state.frontEndMessages === true
+            ? <ul>
+              {messagesReceived}
+            </ul>
+            : <div>Front end message logging disabled in config</div>
+          }
+        </div>
+        }
 
       </div>
 
