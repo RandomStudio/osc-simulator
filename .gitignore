@@ -22,3 +22,6 @@ yarn-error.log*
 
 # rc config
 .osc-simulatorrc
+
+# log files
+*.log

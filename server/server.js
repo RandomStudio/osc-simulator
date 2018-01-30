@@ -16,7 +16,8 @@ const config = require('rc')('osc-simulator', {
   },
   logging: { 
     level: 'verbose',
-    colorize: true
+    colorize: true,
+    toFile: false
   }
 });
 
@@ -32,10 +33,20 @@ const logger = new winston.Logger({
     })
   ]
 });
+if (config.logging.toFile) {
+  logger.add(winston.transports.File, {
+    filename: 'server.log',
+    timestamp: true,
+    level: 'debug',
+    json: false,
+    showLevel: false
+  });
+}
 
 // ----------------------------------------------------------------------------
 // Log some important things on startup
 // ---------------------------------------------------------------------------
+logger.debug('**************** startup osc-simulator server at', new Date());
 if (config.standalone) {
   logger.info('standalone mode: will only use CLI, no websocket');
 }
