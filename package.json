@@ -17,6 +17,7 @@
   },
   "scripts": {
     "dev": "npx nodemon server/server.js & react-scripts start",
+    "standalone": "node server/server.js --standalone true",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

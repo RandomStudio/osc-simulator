@@ -107,7 +107,7 @@ stdin.addListener("data", (d) => {
 
     case 'dummy':
       console.log(`send /dummy "fromcli"`);
-      sendOsc('dummy', 'fromcli');
+      sendOsc('dummy', 'fromcli', config.sending.ip, config.sending.port);
 
     break;
 
