@@ -56,6 +56,11 @@ Or create your own `.osc-simulatorrc` file in the root of the project and use JS
   }
 ```
 
+### Logging
+Logging on the server side is provided by the venerable [Winston](https://www.npmjs.com/package/winston).
+
+You can optionally log to file (in addition to the console) by setting `--logging.toFile=true` on the command line or overriding elsewhere (as described above).
+
 ## CLI and Standalone Mode
 ### Basic CLI usage
 Launch the node server manually:
