@@ -54,7 +54,7 @@ function sendOsc(address, data, ip, port) {
   logger.debug('data type:', typeof(data));
   let client = new osc.Client(ip, port);
 
-  client.sending(address, data, (err) => {
+  client.send(address, data, (err) => {
     if (err) {
       logger.error('OSC error:', err);
     } else {

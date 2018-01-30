@@ -143,8 +143,8 @@ class App extends Component {
 
   sendOsc(address, data) {
     console.log('send OSC:', address, data);
-    let ip = this.state.destination.ip;
-    let port = this.state.destination.port;
+    let ip = this.state.sending.ip;
+    let port = this.state.sending.port;
     console.log(ip, port, this.autoType(data));
     socket.emit('message', { address, data: this.autoType(data), ip, port });
   }
