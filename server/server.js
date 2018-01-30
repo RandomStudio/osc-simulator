@@ -8,7 +8,7 @@ const config = require('rc')('osc-simulator', {
     port: 12345
   },
   receiving: {
-    ip: '127.0.0.1',
+    ip: '0.0.0.0',
     port: '12345'
   },
   webSocket: {
@@ -24,19 +24,18 @@ const logger = require('winston-color');
 logger.transports.console.level = config.loglevel;
 
 // ----------------------------------------------------------------------------
-// Log if standalone mode
-// ----------------------------------------------------------------------------
+// Log some important things on startup
+// ---------------------------------------------------------------------------
 if (config.standalone) {
   logger.info('standalone mode: will only use CLI, no websocket');
 }
+logger.info('will send to', config.sending);
+logger.info('will listen on', config.receiving);
 
 // ----------------------------------------------------------------------------
 // OSC stuff
 // ----------------------------------------------------------------------------
 const osc = require('node-osc');
-
-logger.info('will send to', config.sending);
-logger.info('will listen on', config.receiving);
 
 let socketClient = null;
 
