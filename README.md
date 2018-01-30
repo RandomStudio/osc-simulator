@@ -52,11 +52,11 @@ It can be very useful to run the server as simple OSC client and/or server, eith
 
 To do this, just launch in standalone mode:
 ```
-node server/server.js --standalone
+node server/server.js --standalone true
 ```
 Even better, you can specify any or all of the destination/server IP and port settings. For example:
 ```
-node server/server.js --standalone --listenPort 5555 --destinationPort 12345 --destinationIp 192.168.1.99
+node server/server.js --standalone true --receiving.ip 5555 --sending.port 12345 --sending.ip 192.168.1.99
 ```
 
 This means you can even launch the system with a basic setup (`npm run dev`) and then start a second instance of `server.js` in standalone mode to test relaying OSC messages to another server instance from the browser.
