@@ -14,14 +14,24 @@ const config = require('rc')('osc-simulator', {
   webSocket: {
     port: 5000
   },
-  loglevel: 'verbose'
+  logging: { 
+    level: 'verbose',
+    color: true
+  }
 });
 
 // ----------------------------------------------------------------------------
 // Logging with pretty colours and configurable level
 // ----------------------------------------------------------------------------
-const logger = require('winston-color');
-logger.transports.console.level = config.loglevel;
+const winston = require('winston');
+const logger = new winston.Logger({
+  level: config.logging.level,
+  transports: [
+    new (winston.transports.Console)({
+      colorize: true
+    })
+  ]
+});
 
 // ----------------------------------------------------------------------------
 // Log some important things on startup
