@@ -16,7 +16,7 @@ const config = require('rc')('osc-simulator', {
   },
   logging: { 
     level: 'verbose',
-    color: true
+    colorize: true
   }
 });
 
@@ -28,7 +28,7 @@ const logger = new winston.Logger({
   level: config.logging.level,
   transports: [
     new (winston.transports.Console)({
-      colorize: true
+      colorize: config.logging.colorize
     })
   ]
 });
