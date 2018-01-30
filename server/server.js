@@ -9,7 +9,7 @@ const config = require('rc')('osc-simulator', {
   },
   receiving: {
     ip: '0.0.0.0',
-    port: '12345'
+    port: 12345
   },
   webSocket: {
     port: 5000
