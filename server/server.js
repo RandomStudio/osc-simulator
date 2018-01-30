@@ -1,51 +1,60 @@
 // ----------------------------------------------------------------------------
+// Config with defaults
+// ----------------------------------------------------------------------------
+const config = require('rc')('osc-simulator', {
+  standalone: false,
+  sending: {
+    ip: '127.0.0.1',
+    port: 12345
+  },
+  receiving: {
+    ip: '127.0.0.1',
+    port: '12345'
+  },
+  webSocket: {
+    port: 5000
+  },
+  loglevel: 'verbose'
+});
+
+// ----------------------------------------------------------------------------
 // Logging with pretty colours and configurable level
 // ----------------------------------------------------------------------------
 const logger = require('winston-color');
-logger.transports.console.level = 'verbose';
+logger.transports.console.level = config.loglevel;
 
 // ----------------------------------------------------------------------------
-// Command line arguments, standalone mode
+// Log if standalone mode
 // ----------------------------------------------------------------------------
-let STANDALONE = false;
-const argv = require('yargs').argv
-if (argv.standalone) {
+if (config.standalone) {
   logger.info('standalone mode: will only use CLI, no websocket');
-  STANDALONE = true;
 }
 
 // ----------------------------------------------------------------------------
 // OSC stuff
 // ----------------------------------------------------------------------------
 const osc = require('node-osc');
-let destination = {
-  ip: argv.destinationIp || "127.0.0.1",
-  port: argv.destinationPort || 12345
-}
-let listen = {
-  ip: argv.listenIp || "0.0.0.0",
-  port: argv.listenPort || destination.port
-}
-logger.info('will send to', destination);
-logger.info('will listen on', listen);
+
+logger.info('will send to', config.sending);
+logger.info('will listen on', config.receiving);
 
 let socketClient = null;
 
-const oscServer = new osc.Server(listen.port, listen.ip);
+const oscServer = new osc.Server(config.receiving.port, config.receiving.ip);
 
 oscServer.on("message", function (msg, rinfo) {
   logger.info("received OSC message:", msg);
-  if (socketClient && !STANDALONE) {
+  if (socketClient && !config.standalone) { // only relay if connected and NOT in standalone mode
     socketClient.emit('message', msg);
   }
 });
 
-function sendOsc(address, data, ip = '127.0.0.1', port = 12345) {
+function sendOsc(address, data, ip, port) {
   logger.info(`sendOsc ${ip}:${port} to address ${address}: ${JSON.stringify(data)}`);
-  logger.verbose('data type:', typeof(data));
+  logger.debug('data type:', typeof(data));
   let client = new osc.Client(ip, port);
 
-  client.send(address, data, (err) => {
+  client.sending(address, data, (err) => {
     if (err) {
       logger.error('OSC error:', err);
     } else {
@@ -58,8 +67,7 @@ function sendOsc(address, data, ip = '127.0.0.1', port = 12345) {
 // ----------------------------------------------------------------------------
 // WebSocket stuff
 // ----------------------------------------------------------------------------
-if (!STANDALONE) {
-  const WS_PORT = 5000;
+if (!config.standalone) {
   const server = require('http').createServer();
 
   const io = require('socket.io')(server, {
@@ -68,16 +76,19 @@ if (!STANDALONE) {
     cookie: false
   });
 
-  server.listen(WS_PORT);
-  logger.info('WebSocket server listening on port', WS_PORT);
+  server.listen(config.webSocket.port);
+  logger.info('WebSocket server listening on port', config.webSocket.port);
 
   io.on('connection', (socket) => {
     logger.info('connected to client websocket:', socket.id);
     socketClient = socket;
 
+    socket.emit('configuration', { sending: config.sending, receiving: config.receiving });
+
     socket.on('message', (data) => {
       logger.verbose('Websocket -> OSC', data, typeof data);
-      sendOsc(data.address, data.data, data.ip, data.port)
+      // use the IP and PORT from backend config, address and payload from front-end message
+      sendOsc(data.address, data.data, config.sending.ip, config.sending.port)
     });
   });
 }

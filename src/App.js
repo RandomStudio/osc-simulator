@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Col, Jumbotron, FormGroup, FormControl, Button, ControlLabel } from 'react-bootstrap';
+import { Jumbotron, FormGroup, FormControl, Button, ControlLabel } from 'react-bootstrap';
 
 const socket = io('http://localhost:5000');
 
@@ -10,18 +10,12 @@ class App extends Component {
     super(props);
     this.state = {
       received: [],
-      destination: {
-        ip: "127.0.0.1",
-        port: 12345
-      },
       address: "/test",
       params: [
         "one"
       ]
     }
 
-    this.updateDestinationIp = this.updateDestinationIp.bind(this);
-    this.updateDestinationPort = this.updateDestinationPort.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
     this.updateParams = this.updateParams.bind(this);
 
@@ -30,8 +24,16 @@ class App extends Component {
   componentDidMount() {
     socket.on('connect', () => {
       console.info('connected to backend');
-      socket.on('message', (data) => {
-        console.log('received message:', data);
+
+      socket.on('configuration', config => {
+        console.log('configuration received:', config);
+        if (config.sending && config.receiving) {
+          this.setState({ sending: config.sending, receiving: config.receiving });
+        }
+      });
+
+      socket.on('message', data => {
+        // console.log('received message:', data);
         let newMessage = {
           address: data[0],
           message: data,
@@ -39,16 +41,9 @@ class App extends Component {
         }
         this.setState({ received: [...this.state.received, newMessage] });
       });
+
     });
 
-  }
-
-  updateDestinationIp(event) {
-    this.setState({ destination: { ...this.state.destination, ip: event.target.value } });
-  }
-
-  updateDestinationPort(event) {
-    this.setState({ destination: { ...this.state.destination, port: event.target.value } });
   }
 
   updateAddress(event) {
@@ -83,28 +78,27 @@ class App extends Component {
       <div className="container">
         <Jumbotron>
           <h1>OSC Simulator</h1>
+          {!this.state.sending && !this.state.receiving &&
+            <code>WARNING: Not connected to backend relay properly</code>
+          }
         </Jumbotron>
-        <h2>Send OSC</h2>
+        <h2>Basic connection test</h2>
 
-        <h6>Destination server</h6>
-
+        
+        {this.state && this.state.sending &&
         <form>
+          <h6>Destination: {this.state.sending.ip}:{this.state.sending.port}</h6>
+          
           <FormGroup>
-            <label>ip address</label>
-            <FormControl type="text" onChange={this.updateDestinationIp} value={this.state.destination.ip} />
+          <Button type="button" onClick={() => { this.sendOsc('dummy', ['frombrowser', 0, 0.1])} } bsStyle="success">Dummy Test</Button>
+          <p>Sends to {this.state.sending.ip}:{this.state.sending.port} <tt>dummy/</tt> the message <tt>frombrowser, 0, 0.1</tt></p>
           </FormGroup>
-
-          <FormGroup>
-            <label>port</label>
-            <FormControl type="text" onChange={this.updateDestinationPort} value={this.state.destination.port} />
-          </FormGroup>
-
-          <FormGroup>
-            <Button type="button" onClick={() => { this.sendOsc('dummy', ['frombrowser', 0, 0.1])} } bsStyle="success">Dummy Test</Button>
-            <p>Sends to {this.state.destination.ip}:{this.state.destination.port} <tt>dummy/</tt> the message <tt>frombrowser, 0, 0.1</tt></p>
-          </FormGroup>
-
-          <hr />
+        </form>
+        }
+        
+        <hr />
+        
+        <form>
 
           <h2>Custom</h2>
 
