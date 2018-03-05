@@ -146,6 +146,12 @@ stdin.addListener("data", (d) => {
       sendOsc(add, args, config.sending.ip, config.sending.port);
       break;
 
+    case 'sendints':
+      let argsNumbers = args.map( arg => parseInt(arg));
+      logger.info(`send to ${add}: ${argsNumbers}`);
+      sendOsc(add, argsNumbers, config.sending.ip, config.sending.port);
+      break;
+
     default:
       logger.info('unknown command');
 
