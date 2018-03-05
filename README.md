@@ -86,15 +86,24 @@ To do this, just launch in standalone mode:
 ```
 node server/server.js --standalone true
 ```
+...or, equivalently:
+```
+npm run standalone
+```
+
 Even better, you can specify any or all of the destination/server IP and port settings. For example:
 ```
 node server/server.js --standalone true --receiving.ip 5555 --sending.port 12345 --sending.ip 192.168.1.99
+```
+...which is the same as:
+```
+npm run standalone -- --receiving.ip 5555 --sending.port 12345 --sending.ip 192.168.1.99
 ```
 
 This means you can even launch the system with a basic setup (`npm run dev`) and then start a second instance of `server.js` in standalone mode to test relaying OSC messages to another server instance from the browser.
 
 ## How it works
-Browsers are not allowed to send or receive OSC messages. But Node servers can. This OSC Simulator uses a websocket (typically on port `5000`) to act as a relay between the "frontend" in the browser and the "backend" Node server.
+Browsers are not allowed to send or receive UDP packets. But Node servers can. This OSC Simulator uses a websocket (typically on port `5000`) to act as a relay between the "frontend" in the browser and the "backend" Node server.
 
 Messages initiated from the browser:
 1. Websocket message sent to Node server
