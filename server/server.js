@@ -18,7 +18,8 @@ const config = require('rc')('osc-simulator', {
     level: 'verbose',
     colorize: true,
     toFile: false,
-    frontEndMessages: true
+    frontEndMessages: true,
+    suppressIncoming: false
   }
 });
 
@@ -64,7 +65,9 @@ let socketClient = null;
 const oscServer = new osc.Server(config.receiving.port, config.receiving.ip);
 
 oscServer.on("message", function (msg, rinfo) {
-  logger.info("received OSC message:", msg);
+  if (!config.logging.suppressIncoming) {
+    logger.info("received OSC message:", msg);
+  }
   if (socketClient && !config.standalone) { // only relay if connected and NOT in standalone mode
     socketClient.emit('message', msg);
   }
@@ -140,7 +143,7 @@ stdin.addListener("data", (d) => {
 
     case 'send':
       logger.info(`send to ${add}: ${args}`);
-      sendOsc(add, [''], config.sending.ip, config.sending.port);
+      sendOsc(add, args, config.sending.ip, config.sending.port);
       break;
 
     default:
