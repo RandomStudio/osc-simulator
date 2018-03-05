@@ -126,18 +126,25 @@ if (!config.standalone) {
 const stdin = process.openStdin();
 
 stdin.addListener("data", (d) => {
-  let input = d.toString().trim();
+  let input = d.toString().trim().split(' ');
+  let command = input[0];
+  let add = input[1];
+  let args = input.slice(2);
   logger.silly(`checking input [${input}]`);
-  switch(input) {
+  switch(command) {
 
     case 'dummy':
-      console.log(`send /dummy "fromcli"`);
-      sendOsc('dummy', 'fromcli', config.sending.ip, config.sending.port);
+      logger.info(`send /dummy "fromcli"`);
+      sendOsc('/dummy', 'fromcli', config.sending.ip, config.sending.port);
+      break;
 
-    break;
+    case 'send':
+      logger.info(`send to ${add}: ${args}`);
+      sendOsc(add, [''], config.sending.ip, config.sending.port);
+      break;
 
     default:
-      console.log('unknown command');
+      logger.info('unknown command');
 
   }
 });

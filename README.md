@@ -68,7 +68,7 @@ OSC Simulator allows you to optionally log to file (in addition to the console) 
 You can also disable the "received" message list on the front end (useful if you're expected a lot of high-frequency incoming messages) by setting `--logging.frontEndMessages=false`
 
 ## CLI and Standalone Mode
-### Basic CLI usage
+### CLI usage
 Launch the node server manually:
 ```
 node server/server.js
@@ -77,6 +77,7 @@ If you pass no extra arguments, the server sets a default destination+port (`127
 
 Now you can type commands in the terminal, followed by return. Here is the list of commands so far:
 * `dummy`: send to the address "/dummy" with a single string argument ("fromcli")
+* `send {address} [args]`: send to the `{address}`, with optional `[args]` (separate with spaces), e.g. `send /test one two three`
 
 ### Standalone Mode
 It can be very useful to run the server as simple OSC client and/or server, either to initiate OSC commands to a remote application or to simply log any incoming OSC messages... without relaying these to the browser UI.
