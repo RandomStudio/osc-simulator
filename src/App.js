@@ -125,6 +125,7 @@ class App extends Component {
         <div>
           <h2>Receiving OSC @ {this.state.receiving.ip}:{this.state.receiving.port}</h2>
           <em>{messagesReceived.length} messages</em>
+          <button onClick={() => this.clearReceived()}>Clear</button>
           {this.state.frontEndMessages === true
             ? <ul>
               {messagesReceived}
@@ -157,6 +158,11 @@ class App extends Component {
     let port = this.state.sending.port;
     // console.log(ip, port, this.autoType(data));
     socket.emit('message', { address, data: this.autoType(data), ip, port });
+  }
+
+  clearReceived() {
+    console.log('clear all messages received');
+    this.setState({ received: [] });
   }
 }
 
