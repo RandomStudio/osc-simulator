@@ -16,7 +16,7 @@
     "winston": "^2.4.0"
   },
   "scripts": {
-    "dev": "npx nodemon server/server.js & react-scripts start",
+    "dev": "react-scripts start & npx nodemon server/server.js",
     "standalone": "node server/server.js --standalone true",
     "start": "react-scripts start",
     "build": "react-scripts build",
