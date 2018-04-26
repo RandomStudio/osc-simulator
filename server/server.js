@@ -75,7 +75,6 @@ oscServer.on("message", function (msg, rinfo) {
 
 function sendOsc(address, data, ip, port) {
   logger.info(`sendOsc ${ip}:${port} to address ${address}: ${JSON.stringify(data)}`);
-  logger.debug('data type:', typeof(data));
   let client = new osc.Client(ip, port);
 
   client.send(address, data, (err) => {
@@ -143,13 +142,7 @@ stdin.addListener("data", (d) => {
 
     case 'send':
       logger.info(`send to ${add}: ${args}`);
-      sendOsc(add, args, config.sending.ip, config.sending.port);
-      break;
-
-    case 'sendints':
-      let argsNumbers = args.map( arg => parseInt(arg));
-      logger.info(`send to ${add}: ${argsNumbers}`);
-      sendOsc(add, argsNumbers, config.sending.ip, config.sending.port);
+      sendOsc(add, autoType(args), config.sending.ip, config.sending.port);
       break;
 
     default:
@@ -157,3 +150,5 @@ stdin.addListener("data", (d) => {
 
   }
 });
+
+const autoType = (arr) => arr.map(value => isNaN(parseFloat(value)) ? value : parseFloat(value));
