@@ -1,7 +1,6 @@
 {
   "name": "osc-simulator",
   "version": "1.2.0",
-  "private": true,
   "dependencies": {
     "bootstrap": "^3.3.7",
     "node-osc": "^2.1.0",
