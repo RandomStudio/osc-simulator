@@ -64,7 +64,7 @@ let socketClient = null;
 
 const oscServer = new osc.Server(config.receiving.port, config.receiving.ip);
 
-oscServer.on("message", function (msg, rinfo) {
+oscServer.on("message", (msg, rinfo) => {
   if (!config.logging.suppressIncoming) {
     logger.info("received OSC message:", msg);
   }
@@ -73,7 +73,7 @@ oscServer.on("message", function (msg, rinfo) {
   }
 });
 
-function sendOsc(address, data, ip, port) {
+const sendOsc = (address, data, ip, port) => {
   logger.info(`sendOsc ${ip}:${port} to address ${address}: ${JSON.stringify(data)}`);
   let client = new osc.Client(ip, port);
 
