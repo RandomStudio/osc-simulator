@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Jumbotron, FormGroup, FormControl, Button, ControlLabel } from 'react-bootstrap';
 
-const socket = io('http://localhost:5000');
+const socket = io('http://192.168.1.70:5000');
 
 class App extends Component {
 
