@@ -93,7 +93,7 @@ npm run standalone
 
 Even better, you can specify any or all of the destination/server IP and port settings. For example:
 ```
-node server/server.js --standalone true --receiving.ip 5555 --sending.port 12345 --sending.ip 192.168.1.99
+node server/server.js --standalone true --receiving.port 5555 --sending.port 12345 --sending.ip 192.168.1.99
 ```
 ...which is the same as:
 ```
