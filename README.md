@@ -75,9 +75,11 @@ node server/server.js
 ```
 If you pass no extra arguments, the server sets a default destination+port (`127.0.0.1:12345`) and listens on the default `0.0.0.0:12345`. In other words, you will be sending OSC messages from the server to itself. And these will be visible in the browser UI if you have it open.
 
-Now you can type commands in the terminal, followed by return. Here is the list of commands so far:
-* `dummy`: send to the address "/dummy" with a single string argument ("fromcli")
-* `send {address} [args]`: send to the `{address}`, with optional `[args]` (separate with spaces), e.g. `send /test one two three`
+Now you can type commands in the terminal, followed by return, in the following form:
+```
+{address} [args]
+```
+... which means send to the `{address}`, with optional `[args]` (separate with spaces), e.g. `/test one two three`
 
 ### Standalone Mode
 It can be very useful to run the server as simple OSC client and/or server, either to initiate OSC commands to a remote application or to simply log any incoming OSC messages... without relaying these to the browser UI.
