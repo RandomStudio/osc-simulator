@@ -93,11 +93,11 @@ npm run standalone
 
 Even better, you can specify any or all of the destination/server IP and port settings. For example:
 ```
-node server/server.js --standalone true --receiving.ip 5555 --sending.port 12345 --sending.ip 192.168.1.99
+node server/server.js --standalone true --receiving.port 5555 --sending.port 12345 --sending.ip 192.168.1.99
 ```
 ...which is the same as:
 ```
-npm run standalone -- --receiving.ip 5555 --sending.port 12345 --sending.ip 192.168.1.99
+npm run standalone -- --receiving.port 5555 --sending.port 12345 --sending.ip 192.168.1.99
 ```
 
 This means you can even launch the system with a basic setup (`npm run dev`) and then start a second instance of `server.js` in standalone mode to test relaying OSC messages to another server instance from the browser.
