@@ -127,28 +127,25 @@ if (!config.standalone) {
 
 const stdin = process.openStdin();
 
+let lastCommand = null;
+
 stdin.addListener("data", (d) => {
   let input = d.toString().trim().split(' ');
-  let command = input[0];
-  let add = input[1];
-  let args = input.slice(2);
-  logger.silly(`checking input [${input}]`);
-  switch(command) {
-
-    case 'dummy':
-      logger.info(`send /dummy "fromcli"`);
-      sendOsc('/dummy', 'fromcli', config.sending.ip, config.sending.port);
-      break;
-
-    case 'send':
-      logger.info(`send to ${add}: ${args}`);
-      sendOsc(add, autoType(args), config.sending.ip, config.sending.port);
-      break;
-
-    default:
-      logger.info('unknown command');
-
+  // let command = input[0];
+  logger.silly(`input [${input}]`);
+  
+  if (input === '' && lastCommand !== null) {
+    input = lastCommand;
+    logger.debug('resend last command', lastCommand);
   }
+  let add = input[0];
+  let args = input.slice(1);
+  
+  logger.info(`send to ${add}: ${args}`);
+  sendOsc(add, autoType(args), config.sending.ip, config.sending.port);
+
+  lastCommand = input;
+
 });
 
 const autoType = (arr) => arr.map(value => isNaN(parseFloat(value)) ? value : parseFloat(value));
