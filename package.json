@@ -2,7 +2,7 @@
   "name": "osc-simulator",
   "version": "1.2.0",
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "node-osc": "^2.1.0",
     "nodemon": "^1.12.1",
     "rc": "^1.2.4",
